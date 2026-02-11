@@ -17,10 +17,7 @@ CAR RENTAL SYSTEM
 - customer info (name, contact info, driver license number)
 - payment processing for reservation
 - concurrent reservation and ensure data consistency
-- ALWAYS PREFER SIMPLICITY WHICH MIGHT REQUIRE TO BREAK SOME PRINCIPLES (COMMUNICATE THAT "I know this principle is breaking but i am keeping it simple to avoid complexity")
-  Example:
-  You don't always need to create separate class and strategies for everything, even though it might make sense as future requirements.
-  Sometimes multiple principles contradict each other.
+
 
 # Error Handling
 - if cars not available

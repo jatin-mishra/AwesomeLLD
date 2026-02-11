@@ -10,6 +10,10 @@
    Finding out the right entities and their relation with right level of abstraction is the where most of the people make mistake.
    Secondary things are about design principles and patterns.
 6. [MOST IMPORTANT] Solutions you read online won't work, stick to requirements you wrote, sometimes requirement changes are small but design changes a lot.
+7. ALWAYS PREFER SIMPLICITY WHICH MIGHT REQUIRE TO BREAK SOME PRINCIPLES (COMMUNICATE THAT "I know this principle is breaking but i am keeping it simple to avoid complexity")
+  Example:
+  You don't always need to create separate class and strategies for everything, even though it might make sense as future requirements.
+  Sometimes multiple principles contradict each other.
 
 
 

@@ -1,4 +1,5 @@
 CAR RENTAL SYSTEM
+(observe closely - explore by yourself for better understanding, you would see different in solutioning and implementation)
 
 # Primary Capabilities
 - browse and reserve available cars for specific dates
@@ -24,18 +25,35 @@ CAR RENTAL SYSTEM
 - if multiple people try to book same car
 - if payment fails
 
+
+# Out of scope
+- multiple currency payment
+- real geohashing and searching
+
+
 # Entity and Relation
 CarType(Enum)
 - Sedan
 - SUV
+
 
 Car
 - id
 - model
 - type
 - plate_number
-- price_per_day
-- km_limit_per_day (can be created as strategies but skipping it for ease)
+- price_per_day (will handle it in pricing service)
+- Limit 
++ getters()
+
+
+Limit
+- limit
+- days 
+  - you might say we need to support multiple types rather than only days
+  - but I will argue if you need 5 month, keep it simple and why not just write 150 days?
+  - again depends on requirements (if day, month, year)
+  - but if also needs hourly then i would keep number in hours.
 
 
 User
@@ -51,8 +69,7 @@ CarPrice
 - price
 - metadata
 
-
-CarPriceType
+PriceType
 - base_price
 - extraPricePerKM
 - weekend_charges
@@ -60,7 +77,7 @@ CarPriceType
 Inventory
 - car_id
 - car_type
-- state (reserved/available)
+- state (reserved/available) 
 - geoHash
 
 Payment
@@ -85,6 +102,15 @@ Booking
 - from
 - to
 - price
+- final_price
+- price breakup
+- pricing_details
+  - base_price
+  - surcharges
+    - weekend etc
+  - extra_charge
+    - extra_km
+    - price_per_km
 - state (CREATED/CONFIRMED/CANCELLED/REFUNDED) 
 
 BookingItem
@@ -96,51 +122,8 @@ BookingItem
 - car_id
 - car_type
 - price
-- final_price
 - state (CONFIRMED/CANCELLED/REFUNDED/PICKED/DROPPED)
-- pricing_details
-    - base_price
-    - surcharges
-      - weekend etc
-    - extra_charge
-      - extra_km
-      - price_per_km
 
-
-BookingService:
-- Map<String, Booking>
-- Map<String, BookingItem>
-- InventoryService
-- PaymentService
-- Filter
-+ browse(query) -> List<Car>
-  + inventory service.getAvailability
-  + return filter.filter([]cars, query)
-
-
-+ reserve(from, to, user, carId) -> Optional<BookingTicket>
-  + try with lock on inventory
-  + take lock in all the inventories for given dates (deadlock issue) (sort by date and then take)
-  + mark them booked (delete inventory from set for now) and release the lock
-  + create booking and booking item
-  + calculate pricing
-  + initiate the payment and return nonce
-  
-+ modifyIntent(bookingId) -> ModificationInfo
-  + get already booked item
-  + if adding dates
-    + reserve(from, to, user, carId)
-  + else if removing
-    + get cancellation charges 
-    + return cost_to_refund - cancellation charges along with info, token 
-
-+ modify(modificationInfo, signature)
-  + paymentservice.initiate refund
-  + return response
-
-
-+ cancelIntent(BookingId) -> CancellationInfo
-+ cancel(CancellationInfo, Signature)
 
 
 InventoryService -> Singleton
@@ -163,9 +146,6 @@ CatalogService extends Filter -> Singleton
   - either return next or input
 
 
-EventBus
-- Map<EventType, List<Listeners>>
-
 
 PricingService extends Filter -> Singleton
 - nextFilter
@@ -181,3 +161,33 @@ PaymentService
 - PaymentGateWay
 + intent(PaymentOrder, nonce) -> return token and endpoint
 + handleCompletionEvent(nonce)
+
+
+BookingService:
+- Map<String, Booking>
+- Map<String, BookingItem>
+- InventoryService
+- PaymentService
+- Filter
++ browse(query) -> List<Car>
+  + inventory service.getAvailability
+  + return filter.filter([]cars, query)
++ reserve(from, to, user, carId) -> Optional<BookingTicket>
+  + try with lock on inventory
+  + take lock in all the inventories for given dates (deadlock issue) (sort by date and then take)
+  + mark them booked (delete inventory from set for now) and release the lock
+  + create booking and booking item
+  + calculate pricing
+  + initiate the payment and return nonce
++ modifyIntent(bookingId) -> ModificationInfo
+  + get already booked item
+  + if adding dates
+    + reserve(from, to, user, carId)
+  + else if removing
+    + get cancellation charges
+    + return cost_to_refund - cancellation charges along with info, token
++ modify(modificationInfo, signature)
+  + paymentservice.initiate refund
+  + return response
++ cancelIntent(BookingId) -> CancellationInfo
++ cancel(CancellationInfo, Signature)

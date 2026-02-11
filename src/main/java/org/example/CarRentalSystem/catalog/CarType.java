@@ -1,4 +1,4 @@
-package org.example.CarRentalSystem;
+package org.example.CarRentalSystem.catalog;
 
 public enum CarType {
     Sedan,

@@ -12,5 +12,5 @@ public class BookingOrder {
     private Double price;
     private Double finalPrice;
     private Map<String, Object> priceBreakup;
-    private BookingStatus status;
+//    private BookingStatus status;
 }

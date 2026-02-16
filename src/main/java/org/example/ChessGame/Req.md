@@ -136,8 +136,8 @@ Game:
 + getResult()
   
 
-GameManager
-    - Map<String, Game> 
-    + startGame(name1, name2) -> gameId, Player{color, name}
-    + move(user, from_x, from_y, to_x, to_y)
-    + show(gameId)
+GameManager:
+- Map<String, Game> 
++ startGame(name1, name2) -> gameId, Player{color, name}
++ move(user, from_x, from_y, to_x, to_y)
++ show(gameId)

@@ -134,10 +134,44 @@ Game:
 - checkForCheckMate()
 + showState() -> prints proper game
 + getResult()
-  
 
 GameManager:
 - Map<String, Game> 
 + startGame(name1, name2) -> gameId, Player{color, name}
 + move(user, from_x, from_y, to_x, to_y)
 + show(gameId)
+
+
+On move if checkMate:
+EventBus.put(GameEventEntry, gameEvent)
+EventBus.put(ScoreEventEntry, ScoreEvent)
+
+Listener:
+    Map<EventType, List<LeaderBoard>>
+    + onEvent(gameId, winner, loser)
+
+LeaderBoard implements Listener:
++ onEvent(gameId, winner, loser)
++ getLeaderBoard() -> List<LeaderBoardEntry>
++ getTopK(int k) -> List<LeaderBoardEntry>
+
+ScoreLeaderBoard implements LeaderBoard:
+- TreeMap<Double, LinkedList<User>> 
+- ScoreManager : SimpleScoreManager
++ onEvent(gameId, winner, loser)
++ getLeaderBoard()
++ getTopK(int k) -
+
+
+ScoreManager:
++ playedGame(Winner/Loser, user) -> Double : new score
+
+
+SimpleScoreManager:
+- Map<User, Score>
++ playedGame(Winner/Loser, user) -> Double
+
+
+GameLeaderBoard  implements LeaderBoard:
++ onEvent(gameId, winner, loser)
++ getLeaderBoard()

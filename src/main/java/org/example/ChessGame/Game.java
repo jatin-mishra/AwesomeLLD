@@ -47,9 +47,9 @@ public class Game {
         // check for staleMate or checkmate
     }
 
-    public boolean isStaleMate(){}
+    public boolean isStaleMate(){return true;}
 
-    public boolean isCheckMate(){}
+    public boolean isCheckMate(){return true;}
 
     public void show(){
 

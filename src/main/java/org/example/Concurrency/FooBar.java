@@ -30,7 +30,7 @@ public class FooBar {
     }
 
     static void main(String[] args) throws Exception{
-        try(BufferedWriter writer = new BufferedWriter(new FileWriter("/Users/jatinmishra/Desktop/practice/low-level-design/AwesomeLLD/src/main/resources/out.txt"))){
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter("resources/out.txt"))){
             FooBar fooBar = new FooBar();
             Thread t1 = new Thread(() -> {
                 for (int i = 0; i < 500; i++) {

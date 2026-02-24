@@ -98,11 +98,11 @@ UserService:
 
 
 Transaction:
-user1
-user2
-type: Expense/Settle
-amount
-created_at
+- user1
+- user2
+- type: Expense/Settle
+- amount
+- created_at
 
 
 SettlementService:

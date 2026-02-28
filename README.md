@@ -11,9 +11,14 @@
    Secondary things are about design principles and patterns.
 6. [MOST IMPORTANT] Solutions you read online won't work, stick to requirements you wrote, sometimes requirement changes are small but design changes a lot.
 7. ALWAYS PREFER SIMPLICITY WHICH MIGHT REQUIRE TO BREAK SOME PRINCIPLES (COMMUNICATE THAT "I know this principle is breaking but i am keeping it simple to avoid complexity")
-  Example:
-  You don't always need to create separate class and strategies for everything, even though it might make sense as future requirements.
-  Sometimes multiple principles contradict each other.
+   Example:
+   You don't always need to create separate class and strategies for everything, even though it might make sense as future requirements.
+   Sometimes multiple principles contradict each other.
+8. Don't just write requirements in random order, it will confuse you, order requirements properly and keep similar requirements together, proper structured requirements are easier to solve.
+   Example:
+   Keep writing related requirements first
+   then read requirements
+   and start solving writes which will give you enough information to handle efficient reads too.
 
 
 

@@ -1,118 +1,83 @@
 # Problem Statement
-Design SplitWise
-
-# Requirements
-- create Account and Manage profile
-- create groups and add users to groups
-- add expense (group, amount, description, participants={default=all})
-- split expenses among participants
-- users should be able to see and settle balances to other
-- support different split methods
+- create and update profile / account
+- create group
+  - add user to group
+  - add expense to the group
+    - Amount
+    - Description
+    - Participants
+- Split expenses among participants based on their share
+  - different split methods
     - equal
     - percentage
     - exact amount
-- transaction history and group expenses
+- user can see payment to be done to other users
+  - and should be able to settle 
+- transaction history of user (total)
+  - when paid in which group
+  - when settled in which group
+- group expenses
 
-# Good to have
-- normalize and reduce total number of transactions
-    - Example: remove cycle transactions
-
-
-# Error Handling and Corner cases
-- absolute number? or double?
-- number smaller than group already? (Don't allow)
-
-
-# Entity and Relation
+# Entity and Relations
 User:
 - id
 - name
-- metadata{}
-
+- age 
 
 Group:
-- id
 - name
-- []users
-- []Expense
-- Map<user1, Map<user2, amount>> splits
-- Map<user1, Map<user2, amount>> toReceive
-+ Group(name)
-+ addUser(user)
-+ addExpense(Expense)
-+ paid(user1, map[user, amount])
-+ remove(user1, user2)
-+ update(user1, user2, amount)
-+ userDetails(userId) -> map<user2, amount>
+- description
+- createdAt
+- createdBy
++ addParticipant(User)
 
+GroupUser
+- groupId
+- userId
+- status
 
-SplitStrategy:
-+ split(amount, debtors, breakupConfig)
-
-
-EqualSplit:
-PercentageSplit:
-ExactSplit:
-
+Split:
+- participant
+- amountToBePaid
 
 Expense:
-- amount
-- payor
-- []debtors
-- Split Type (Equal, Percentage, Exact)
-- map<debtor, value> breakupConfig (for percentage or exact)
+- groupId
+- description
+- paidBy
+- SplitType (Equal, Percentage, Exact_Amount)
+- {}FinalSplit
+- []{participant, share}
 
+SplitStrategy:
++ split([]{participant, share}, totalAmount) -> {}Split
 
-
-SplitWise:
-- UserTransactionService
+GroupService:
+- Map<String, Group> group
+- Map<GroupId, Set<UserId>> groupUser 
+- Map<String, List<Expense>> groupExpense
 - SettlementService
-- GroupService
-+ addUser(user)
-+ removeUser(user)
-+ createGroup()
-+ addUserToGroup()
-+ addExpense(expense)
-  // groupservice.addExpense which does split
-  // prepare and add transaction and settlements global level
-+ paid(group, user1, pay{user2, amount})
-  // inform transactions and setttlement service as well
++ createGroup(Group)
++ addUserToGroup(groupId, userId)
++ addExpenseToGroup(Expense)
+  // {}Split = SplitStrategy([]{participant, share})
+  // add user2 -> user1 amount to be paid
++ getGroupExpense(groupId)
 
-
-GroupService
-- Map<GroupName, Group>
-- SplitStrategy
-+ createGroup()
-+ addUserToGroup([]users, groupname)
-+ addExpenseToGroup(group, expense)
-  = calculate split
-  = add to group
-  = send group settlement data
-+ settlePayment(group, user1, pay{user2, amount})
-
-
-UserService:
-- Map<id, User>
-+ createUser(user) -> User
-+ removeUser(userId) -> boolean
-
-
-Transaction:
-- user1
-- user2
-- type: Expense/Settle
+Balance:
+- id
+- payTo
+- payer
 - amount
-- created_at
+- description
+- status (TODO, DONE)
+
+BalanceSheetManager:
+- Map<String, Settlement>
+- Map<Id, Map<GroupId, List<Settlement>>> payerToSettlement
+- Map<Id, Map<GroupId, List<Settlement>>> receiverToSettlement
++ createSettlement(Settlement)
++ getTransaction(userId)
++ getTransaction(userId, groupId)
 
 
-SettlementService:
-- Map<user, Map<user, amount>> toGive
-- Map<user, Map<user, amount>> toTake
-+ addExpense(group, Expense)
-+ settle(group, user1, map[user2, amount])
-
-
-LedgerService:
-- Map<userId, []Transaction>
-+ addTRansaction(userId, Transaction)
 
